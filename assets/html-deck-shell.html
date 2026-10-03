@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PM Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== THEME TOKENS: swap these from the theme JSON (hex with #) ===== */
+:root{
+  --primary:#1E3FBF; --primary-dark:#0B2A8C; --primary-soft:#E6E9FB; --primary-mid:#B9C0F2;
+  --accent:#FFE500; --accent-soft:#FFF6A6; --ink:#111C4A; --muted:#5B6489;
+  --surface:#F4F5FA; --card:#FFFFFF; --positive:#1E9E6A; --warning:#F5A524; --danger:#E5484D;
+  --font:'Outfit','Segoe UI',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --stage:#0b0f24; } }
+:root[data-theme="dark"]{ --stage:#0b0f24; }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--stage,#dfe2ef);color:var(--ink);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overflow-x:hidden}
+
+/* ===== STAGE: slides are 1280x720 and scale to fit ===== */
+.deck{position:relative}
+.frame{width:calc(1280px*var(--s,1));height:calc(720px*var(--s,1));margin:0 auto;position:relative}
+.slide{width:1280px;height:720px;position:absolute;left:0;top:0;transform:scale(var(--s,1));transform-origin:0 0;overflow:hidden;background:var(--surface);font-size:14px;line-height:1.35}
+.slide.dark{background:var(--primary);color:#fff}
+body.present .frame{display:none}
+body.present .frame.on{display:block;margin-top:calc((100vh - 720px*var(--s,1))/2)}
+body.read .frame{margin-bottom:24px}
+body.read .frame:first-child{margin-top:16px}
+.toolbar{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9;display:flex;gap:6px}
+.toolbar button{font:600 13px var(--font);border:1px solid var(--primary);background:var(--accent);color:var(--primary);border-radius:99px;padding:6px 12px;cursor:pointer}
+
+/* ===== TRACKER (set data-nav on .deck: tabs | chevron | bottom) ===== */
+.tracker{position:absolute;left:0;right:0;display:flex;font-weight:700}
+.tracker span{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;color:#fff;background:var(--primary)}
+.tracker span.on{background:var(--accent);color:var(--primary)}
+.deck[data-nav="tabs"] .tracker{top:14px;left:20px;right:20px;gap:6px}
+.deck[data-nav="tabs"] .tracker span{height:48px;border-radius:7px;border:1px solid var(--primary-dark)}
+.deck[data-nav="tabs"] .tracker span.on{border-color:var(--primary)}
+.deck[data-nav="chevron"] .tracker{top:0;height:58px}
+.deck[data-nav="chevron"] .tracker span{clip-path:polygon(0 0,calc(100% - 22px) 0,100% 50%,calc(100% - 22px) 100%,0 100%,22px 50%);margin-left:-10px;padding:0 24px}
+.deck[data-nav="chevron"] .tracker span:first-child{clip-path:polygon(0 0,calc(100% - 22px) 0,100% 50%,calc(100% - 22px) 100%,0 100%);margin-left:0}
+.deck[data-nav="bottom"] .tracker{bottom:14px;left:20px;right:20px;height:58px;background:var(--accent);border:2px solid var(--primary);border-radius:99px}
+.deck[data-nav="bottom"] .tracker span{background:transparent;color:color-mix(in srgb,var(--muted) 85%,var(--accent));font-size:15px}
+.deck[data-nav="bottom"] .tracker span.on{color:var(--ink);font-size:17px}
+
+/* ===== POSTER BODY: sits below the tracker; adjust --top per nav style ===== */
+.poster{position:absolute;left:34px;right:34px;bottom:34px;display:grid;gap:14px}
+.deck[data-nav="tabs"] .poster{top:76px}
+.deck[data-nav="chevron"] .poster{top:72px}
+.deck[data-nav="bottom"] .poster{top:16px;bottom:88px}
+
+/* ===== COMPONENTS ===== */
+b,.hl{font-weight:700;color:var(--primary)}
+.dark b,.dark .hl{color:var(--accent)}
+.strip{display:flex;height:42px;border-radius:10px;overflow:hidden;background:var(--primary);color:#fff;font-weight:700;font-size:17px;align-items:center}
+.strip .lab{background:var(--accent);color:var(--primary);height:100%;display:flex;align-items:center;padding:0 22px;font-size:15px}
+.strip .txt{flex:1;text-align:center;padding:0 14px}
+.strip b{color:var(--accent)}
+.panel{position:relative;border:1.5px dashed var(--primary);border-radius:14px;background:var(--card);padding:30px 14px 12px;min-height:0}
+.panel.plain{border-style:solid;border-color:var(--primary-mid)}
+.panel.tint{background:var(--accent-soft);border-color:var(--warning)}
+.panel>.pill:first-child{position:absolute;left:50%;top:-17px;transform:translateX(-50%)}
+.pill{display:inline-flex;align-items:center;justify-content:center;height:34px;padding:0 22px;border-radius:99px;font-weight:700;font-size:14px;background:var(--accent);color:var(--primary);border:1px solid var(--primary);white-space:nowrap}
+.pill.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pill.soft{background:var(--primary-soft);border-color:var(--primary-mid)}
+.pill.sm{height:26px;font-size:12.5px;padding:0 14px}
+.badge{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--accent);border:1px solid var(--primary);color:var(--primary);font-weight:700;align-items:center;justify-content:center;font-size:13px}
+.icon-badge{display:inline-flex;width:48px;height:48px;border-radius:50%;background:var(--primary-soft);border:1px solid var(--primary);align-items:center;justify-content:center;flex:none}
+.icon-badge svg{width:24px;height:24px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-badge.warm{background:var(--accent-soft);border-color:var(--warning)}
+.evidence{border:1.5px dashed var(--primary);border-radius:12px;padding:8px 12px;background:var(--card);font-size:13.5px}
+.evidence.accent{background:var(--accent-soft);border-color:var(--warning)}
+.evidence .src{display:block;text-align:right;color:var(--muted);font-size:12px;font-style:italic;margin-top:4px}
+.stat-circle{width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;border:3px solid var(--primary-mid);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex:none}
+.stat{background:var(--card);border:1px solid var(--primary-mid);border-radius:12px;text-align:center;padding:10px}
+.stat .v{font-size:34px;font-weight:700;color:var(--primary);line-height:1.1}
+.donut{--p:28;width:84px;height:84px;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--p)*1%),var(--primary-mid) 0);display:flex;align-items:center;justify-content:center;flex:none}
+.donut::after{content:attr(data-label);width:58px;height:58px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--primary)}
+.steps{display:flex;gap:26px;align-items:stretch}
+.steps .step{flex:1;position:relative;background:var(--accent-soft);border:1px solid var(--warning);border-radius:10px;padding:14px 8px 8px;text-align:center;font-weight:700;color:var(--primary);display:flex;align-items:center;justify-content:center}
+.steps .step .badge{position:absolute;left:-8px;top:-12px;width:28px;height:28px}
+.steps .step:not(:last-child)::after{content:"";position:absolute;right:-22px;top:50%;border-left:14px solid var(--primary);border-top:8px solid transparent;border-bottom:8px solid transparent;transform:translateY(-50%)}
+.persona{background:var(--accent-soft);border:1px solid var(--warning);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.persona .head{display:flex;gap:12px;align-items:center}
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex:none;object-fit:cover}
+.persona .name{font-weight:700;font-size:20px;color:var(--primary)} .persona .meta{color:var(--muted);font-size:13px}
+.persona q{font-style:italic;font-size:13.5px;quotes:"“" "”"}
+.persona ul,.bul{padding-left:18px;font-size:13px} .persona li,.bul li{margin:1px 0}
+.persona .sol{margin-top:auto;background:var(--primary-soft);border:1px solid var(--primary-mid);border-radius:10px;padding:8px 10px;font-size:13px}
+table.x{width:100%;border-collapse:collapse;font-size:13.5px}
+table.x th{background:var(--primary);color:#fff;padding:7px 10px;font-weight:700;border:1px solid var(--primary-mid)}
+table.x td{padding:7px 10px;border:1px solid var(--primary-mid);background:#fff;vertical-align:middle}
+table.x tr:nth-child(even) td{background:var(--surface)}
+table.x td:first-child{background:var(--primary-soft);font-weight:700}
+.sev{font-weight:700;text-align:center}
+.sev-high{background:color-mix(in srgb,var(--danger) 18%,#fff)!important;color:#8f1d22}
+.sev-medium{background:color-mix(in srgb,var(--warning) 22%,#fff)!important;color:#8a5600}
+.sev-low{background:color-mix(in srgb,var(--positive) 18%,#fff)!important;color:#0e6a45}
+.metric{position:relative;background:var(--card);border:1px solid var(--primary-mid);border-radius:14px;padding:30px 12px 12px;display:flex;flex-direction:column;gap:8px;text-align:center;font-size:13px}
+.metric>.pill{position:absolute;left:10px;right:10px;top:-17px}
+.metric .formula{font-family:Cambria,Georgia,serif;font-weight:700;color:var(--primary);font-size:15px}
+.metric .bench{background:var(--accent-soft);border:1px solid var(--warning);border-radius:10px;padding:7px 9px;text-align:left}
+.metric .target{border:1.5px dashed var(--danger);border-radius:10px;padding:7px 9px;font-style:italic;flex:1;display:flex;align-items:center;justify-content:center}
+.timeline{display:flex;height:56px;align-items:center;background:var(--primary-soft);border:1px solid var(--primary-mid);clip-path:polygon(0 0,calc(100% - 34px) 0,100% 50%,calc(100% - 34px) 100%,0 100%)}
+.timeline div{flex:1;text-align:center;font-size:13.5px} .timeline div b{display:block}
+.ps{display:grid;grid-template-columns:34px repeat(var(--n,3),1fr);grid-template-rows:auto 1fr 1fr;gap:6px 14px}
+.ps .rail{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:99px;border:1px solid var(--primary);padding:10px 0;font-size:13px}
+.ps .rail.p{background:var(--primary);color:#fff} .ps .rail.s{background:var(--accent);color:var(--primary)}
+.ps .cell{display:flex;gap:10px;align-items:center;font-size:13.5px;padding:6px 4px;border-left:1px dashed var(--primary-mid)}
+.phone{width:260px;height:540px;border-radius:38px;background:var(--ink);padding:10px;position:relative}
+.phone::before{content:"";position:absolute;left:50%;top:16px;width:80px;height:14px;border-radius:99px;background:var(--ink);transform:translateX(-50%);z-index:2}
+.phone .screen{background:#fff;border-radius:30px;height:100%;padding:40px 14px 14px;overflow:hidden}
+.callout{position:relative;background:var(--primary-soft);border:1px solid var(--primary-mid);border-radius:12px;padding:12px 14px 10px 22px;font-size:13px}
+.callout .badge{position:absolute;left:-10px;top:-10px;width:28px;height:28px}
+.callout h4{font-size:14px;color:var(--primary);margin-bottom:2px}
+
+/* ===== KEY-MOMENT (light) SLIDES ===== */
+.big{position:absolute;left:80px;right:80px;top:130px;bottom:130px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.big h1{font-size:54px;line-height:1.12;font-weight:700}
+.big p{font-size:22px;opacity:.8}
+.big .pill{align-self:flex-start}
+.src-note{position:absolute;left:34px;bottom:10px;font-size:12px;font-style:italic;color:var(--muted)}
+.dark .num{display:inline-flex;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--primary);align-items:center;justify-content:center;font-weight:700;margin-right:18px;flex:none}
+.bd{position:absolute;left:80px;right:80px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:30px}
+.bd div{display:flex;align-items:center;font-size:27px;font-weight:700}
+
+@media print{
+  @page{size:1280px 720px;margin:0}
+  body{background:none;padding:0} .toolbar{display:none}
+  .frame{display:block!important;width:1280px!important;height:720px!important;margin:0!important;page-break-after:always;break-after:page}
+  .slide{transform:none!important}
+}
+</style>
+</head>
+<body class="present">
+<!--
+  HOW TO USE THIS SHELL
+  1. Set data-sections (pipe-separated) and data-nav (tabs | chevron | bottom) on .deck.
+  2. One <section class="slide poster-slide" data-section="N"> per slide, inside <div class="frame">.
+     data-section is the 0-based index of the tracker item to highlight; omit it on dark/key-moment slides (no tracker).
+  3. Build body content inside <div class="poster"> using a CSS grid (set grid-template-columns/rows inline).
+  4. Keep text >= 12px, and every region needs a pill/icon/chart/table so it never reads as a bare list.
+-->
+<main class="deck" data-nav="tabs" data-sections="Problem|Users|Solution|Risks &amp; Mitigation|Metrics">
+
+  <!-- 1. Question (dark) -->
+  <div class="frame"><section class="slide dark">
+    <div class="big"><span class="pill">Product Design Case</span>
+      <h1>People never get bored anymore, and creativity is falling. Design a product that brings <b>boredom back</b>, for good.</h1>
+      <p>Your Name · Your Institute · 2026</p></div>
+  </section></div>
+
+  <!-- 2. Breakdown (dark) -->
+  <div class="frame"><section class="slide dark"><div class="bd">
+    <div><span class="num">1</span><span>What is truly broken, and why does it matter <b>now</b>?</span></div>
+    <div><span class="num">2</span><span>Who are you designing for, and what <b>gap</b> do they have?</span></div>
+    <div><span class="num">3</span><span>What is the product, and what does the <b>MVP</b> look like?</span></div>
+    <div><span class="num">4</span><span>What are the biggest <b>risks</b>, and how do you mitigate them?</span></div>
+    <div><span class="num">5</span><span>How do you <b>measure</b> success?</span></div>
+  </div></section></div>
+
+  <!-- 3. Poster slide: Problem -->
+  <div class="frame"><section class="slide" data-section="0">
+    <div class="poster" style="grid-template-rows:42px 1fr;">
+      <div class="strip"><span class="lab">INSIGHT</span><span class="txt">Every idle moment is now filled, so the mind <b>never rests</b></span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:0">
+        <div style="display:grid;grid-template-rows:auto 1fr;gap:22px;min-height:0">
+          <div class="panel"><span class="pill">How the problem compounds</span>
+            <div class="steps" style="height:110px">
+              <div class="step"><span class="badge">1</span>Idle moments erased</div>
+              <div class="step"><span class="badge">2</span>No room for stillness</div>
+              <div class="step"><span class="badge">3</span>Loops replace reflection</div>
+              <div class="step"><span class="badge">4</span>Fatigue deepens</div>
+              <div class="step"><span class="badge">5</span>Creativity fades</div>
+            </div></div>
+          <div class="panel"><span class="pill">Proposed solution</span>
+            <p>A calm-tech companion that turns boredom into a <b>deliberate reset</b>.</p></div>
+        </div>
+        <div class="panel"><span class="pill">Problem validation</span>
+          <div style="display:flex;gap:14px;align-items:center">
+            <div class="donut" style="--p:28" data-label="28%"></div>
+            <div class="evidence accent" style="flex:1"><b>[X h Y min]</b> of daily phone use goes to short-form video (placeholder)<span class="src">Source: [add source]</span></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:14px"><div class="stat-circle">39%</div><span>decline in cognitive control (placeholder)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="src-note">Sources: [add source 1], [add source 2]</div>
+  </section></div>
+
+  <!-- 4. Table slide: Risks -->
+  <div class="frame"><section class="slide" data-section="3">
+    <div class="poster" style="grid-template-rows:42px 1fr;">
+      <div class="strip"><span class="lab">RISKS</span><span class="txt">Most risk comes from <b>over-reach</b>: too much friction or tracking</span></div>
+      <div class="panel"><span class="pill">Mitigations &amp; severity</span>
+        <table class="x"><tr><th>Risk</th><th style="width:110px">Severity</th><th>Mitigation</th><th>Monitoring</th></tr>
+          <tr><td>App dependency</td><td class="sev sev-high">High</td><td>Off-app prompts; cap calm activations per day</td><td>Dependency indicators</td></tr>
+          <tr><td>Calm as a metric</td><td class="sev sev-medium">Medium</td><td>Reframe the score as reflective, not competitive</td><td>Periodic UX tests</td></tr>
+          <tr><td>Emotional flattening</td><td class="sev sev-low">Low</td><td>Vary ambient tones and rotate sensory patterns</td><td>Mood-based feedback</td></tr>
+        </table></div>
+    </div>
+  </section></div>
+
+  <!-- Closing (dark) -->
+  <div class="frame"><section class="slide dark">
+    <div class="big" style="align-items:center;text-align:center"><h1 style="font-size:84px">Thank you</h1><p>We are ready to turn insights into impact</p></div>
+  </section></div>
+</main>
+
+<div class="toolbar"><button id="mode">Read view</button></div>
+<script>
+(function(){
+  var deck=document.querySelector('.deck'), frames=[].slice.call(deck.querySelectorAll('.frame')), idx=0;
+  var sections=(deck.dataset.sections||'').split('|');
+  // build trackers from data-sections / data-section
+  frames.forEach(function(f){
+    var s=f.querySelector('.slide'), n=s.dataset.section;
+    if(n!==undefined && sections.length){
+      var t=document.createElement('nav'); t.className='tracker';
+      t.innerHTML=sections.map(function(l,i){return '<span'+(i==n?' class="on"':'')+'>'+l+'</span>'}).join('');
+      s.insertBefore(t,s.firstChild);
+    }
+  });
+  function fit(){
+    var present=document.body.classList.contains('present');
+    var sw=(window.innerWidth-(present?0:32))/1280, sh=present?(window.innerHeight/720):9;
+    document.documentElement.style.setProperty('--s',Math.min(sw,sh,1.6));
+  }
+  function show(i){idx=Math.max(0,Math.min(frames.length-1,i));frames.forEach(function(f,j){f.classList.toggle('on',j===idx)})}
+  document.addEventListener('keydown',function(e){
+    if(!document.body.classList.contains('present'))return;
+    if(['ArrowRight','PageDown',' '].indexOf(e.key)>-1){e.preventDefault();show(idx+1)}
+    if(['ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();show(idx-1)}
+  });
+  document.addEventListener('click',function(e){
+    if(e.target.closest('.toolbar')||!document.body.classList.contains('present'))return;
+    show(e.clientX>window.innerWidth/2?idx+1:idx-1);
+  });
+  document.getElementById('mode').onclick=function(e){
+    e.stopPropagation();
+    var read=document.body.classList.toggle('read'); document.body.classList.toggle('present',!read);
+    this.textContent=read?'Present view':'Read view'; fit();
+  };
+  window.addEventListener('resize',fit); fit(); show(0);
+})();
+</script>
+</body>
+</html>

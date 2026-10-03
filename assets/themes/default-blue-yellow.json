@@ -1,0 +1,22 @@
+{
+  "name": "Default Blue Yellow",
+  "colors": {
+    "primary": "1E3FBF",
+    "primaryDark": "0B2A8C",
+    "primarySoft": "E6E9FB",
+    "primaryMid": "B9C0F2",
+    "accent": "FFE500",
+    "accentSoft": "FFF6A6",
+    "ink": "111C4A",
+    "muted": "5B6489",
+    "surface": "F4F5FA",
+    "card": "FFFFFF",
+    "positive": "1E9E6A",
+    "warning": "F5A524",
+    "danger": "E5484D"
+  },
+  "fonts": {
+    "head": "Arial",
+    "body": "Calibri"
+  }
+}

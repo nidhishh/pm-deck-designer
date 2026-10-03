@@ -1,0 +1,22 @@
+{
+  "name": "Indigo Coral",
+  "colors": {
+    "primary": "3B2FC9",
+    "primaryDark": "2A1F9E",
+    "primarySoft": "ECEAFB",
+    "primaryMid": "C3BEF4",
+    "accent": "FF9470",
+    "accentSoft": "FFE6DC",
+    "ink": "1A1446",
+    "muted": "5E5A7E",
+    "surface": "F6F5FC",
+    "card": "FFFFFF",
+    "positive": "1E9E6A",
+    "warning": "F5A524",
+    "danger": "D9363E"
+  },
+  "fonts": {
+    "head": "Arial",
+    "body": "Calibri"
+  }
+}
