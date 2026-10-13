@@ -15,7 +15,7 @@ Builds decks that read like the best case-competition submissions: a bold openin
 
 ## Modes
 
-The skill runs as named modes, like `impeccable`: **shape, ideate, build, critique, polish, densify, distill, verify, theme, export, teardown**. When the user names a mode ("critique slide 2", "densify slide 3", "teardown this deck", "switch theme"), read `references/workflow.md` and run that mode. For a new deck, run the default loop **shape → ideate → build → critique → polish → verify → export**, stopping for the user after shape, ideate and critique. The steps below are the detail behind shape and build.
+The skill runs as named modes, like `impeccable`: **shape, ideate, build, critique, polish, densify, distill, verify, theme, export, teardown**. When the user names a mode ("critique slide 2", "densify slide 3", "teardown this deck", "switch theme"), read `references/workflow.md` and run that mode. For a new deck, run the default loop **shape → research → ideate → build → critique → polish → verify → export**, stopping for the user after shape, research, ideate and critique. The steps below are the detail behind shape and build.
 
 ## Workflow
 
@@ -34,6 +34,9 @@ Ask at most 3 questions in one go, and skip any the user already answered.
 Read `references/narrative-templates.md`, pick one of the four templates (Product build, Strategy/GTM, Market and unit economics, Phased roadmap), and adapt the tracker labels to the prompt's sub-questions. Mixing is allowed; six tracker sections is the maximum.
 
 ### Standing rules from the user
+- **Every region answers a new evaluator question; never restate what's already on the slide.** Each slide carries at least one insight move (non-obvious why, contrarian bet, trade-off, what we won't do, kill criteria). See narrative-templates.md "Content bar".
+- **One hero per slide**: one region at 1.5–2× the others with a 40–60 pt number or a full-size framework graphic, a 4× type-size jump, and at least two container styles. See design-system.md "Visual hierarchy".
+- **Research numbers before building**: sourced figures or visible Fermi estimates, not bare `[__]` slots.
 - **Maximum density** (≈85% of the canvas as content, 9–12 regions, sourced numbers everywhere possible): see design-system.md "Dense layout spec".
 - **Talk before generating**: describe planned changes and wait for a go-ahead before any build or rebuild (workflow.md).
 - **Frameworks as graphics, chosen with the user** through questions with previews; no line charts without real data; no decorative graphics.
@@ -41,7 +44,7 @@ Read `references/narrative-templates.md`, pick one of the four templates (Produc
 
 ### 3. Storyboard in the reply, then wait for approval
 
-Post a compact storyboard so the flow is visible and easy to correct: one line per slide with its tracker section, the takeaway sentence, and the main devices ("persona cards ×3 + journey table"). Then **stop and wait for the user's OK** before building. Building a full deck is expensive; a wrong storyboard wastes all of it. Skip the wait only when the user has said "just build it" or similar. If the user supplied draft content, map it onto the storyboard and keep their meaning and numbers; tighten wording to fit rather than rewriting claims.
+Post a compact storyboard so the flow is visible and easy to correct: one line per slide with its tracker section, the takeaway sentence, the hero region, the regions with the evaluator question each answers, and the insight move. Then **stop and wait for the user's OK** before building. Building a full deck is expensive; a wrong storyboard wastes all of it. Skip the wait only when the user has said "just build it" or similar. If the user supplied draft content, map it onto the storyboard and keep their meaning and numbers; tighten wording to fit rather than rewriting claims.
 
 ### 4. Apply the design system and build
 

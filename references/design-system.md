@@ -51,17 +51,37 @@ Dense is the default, so the floors are lower than a keynote deck. Small text on
 | Takeaway strip | 13 to 15 pt bold | n/a |
 | Tracker labels | 11 to 12 pt bold | n/a |
 | Pill / block header | 10.5 to 12 pt bold | n/a |
+| Hero number | 40 to 60 pt bold (one per slide) | 80 pt+ |
 | Big number / stat | 22 to 34 pt bold | 60 pt+ |
 | Body in blocks | **9.5 to 11 pt** (floor 9.5; captions, tags and sources 9) | 18 to 24 pt |
 | Source / footnote | 9 pt italic muted | 12 pt |
 | Statement text | n/a | 36 to 54 pt bold |
 
 **Density budget per dense slide (user standard: as dense as possible)**
-- **9 to 12 content regions**; content covers **~85% of the canvas** (see "Dense layout spec"). More than 12: split the slide.
+- **Density means arguments, not boxes (user rule).** Every region answers one evaluator question no other region on the slide answers (narrative-templates.md "Content bar"). A region that restates something already on the slide is filler, not density: cut it and give the space to the hero.
+- **9 to 12 content regions**; content covers **~85% of the canvas** (see "Dense layout spec"). More than 12: split the slide. Fewer regions with real arguments beat more regions with repeats.
 - About **300 to 400 words** total, with a **sourced number or a graphic in every region**. Empty space inside a panel is a defect: fill it with evidence, never by enlarging boxes or fonts.
 - Each text block 15 to 45 words. Sentences, not paragraphs. Prefer fragments with a bold key phrase.
 - Every region carries a visual device: pill header, icon, number, chart, table, or mockup. A bare bulleted list in a bare box is a defect.
 - If the user will present live rather than send as a pre-read, offer a lighter variant: split each poster into 2 slides and raise body text to 14 pt.
+
+## Visual hierarchy: one hero per slide
+
+Nine equal dashed boxes read as wallpaper; the eye needs a place to land. Every poster slide has three levels of weight:
+
+1. **Hero region (exactly one).** The graphic or number that carries the takeaway: 1.5–2× the area of any other region (typically a full column or ~30–40% of the content area). It holds the slide's biggest type: a **40–60 pt number** or the framework graphic at full canonical size. Name it in the storyboard ("hero: funnel with drop-off rates").
+2. **Supporting regions (3–6).** Evidence and explanation for the hero, at the normal dense sizes.
+3. **Margin content.** Sources, tags, footnotes, small callouts.
+
+**Type-scale contrast.** At least one jump of 4× or more on each poster slide (e.g. a 48 pt figure beside 10 pt body text). A slide whose largest text is the 13–15 pt takeaway is flat: promote the hero's key number.
+
+**Container variety.** The dashed panel with a pill is the default, not the only style. Per slide, use at least two of:
+- **dashed panel + pill** (supporting groups)
+- **solid dark band** (`primary` fill, white text, accent keywords): for the hero or the key "so what"; at most one per slide
+- **unboxed region**: a big number or graphic sitting directly on the background, with no border; good for the hero
+- **soft card** (`primarySoft` fill, no border): callouts, quotes, mini-cases
+
+**Squint test.** Blur the render (or view it at thumbnail size). You should see the takeaway, then the hero, then everything else. If the regions look equal, enlarge the hero, demote a supporting region, or switch the hero to a dark band or unboxed style.
 
 ## Canvas, grid, spacing
 
@@ -143,6 +163,9 @@ Pick the lightest device that fits; vary them across the slide so it does not lo
 5. **Cut decoration**: no icon circles or avatars by default, no tile backgrounds around a single number; one compact row of figures beats four tiles.
 6. **Graphic and explanation share a region**: text wraps around the graphic instead of sitting in a separate box.
 7. **Check**: any graphic whose area is more than ~40% empty (no text or data) is a defect.
+8. **No spread rows (user rule).** Never distribute 2–4 short lines across a tall card (equal row heights, `valign: middle`): that is whitespace with text floating in it. If text fills less than ~70% of a card, (a) convert it to a **structured table** like the risk table (filled header row, cell fills, one column per attribute), (b) add a column of new information (e.g. "what we track instead", "threshold", "owner", "kill if"), or (c) shrink the card and give the space to another region. Lists of comparable items (risks, experiments, guardrails, rejected metrics, alternatives) default to tables.
+9. **Split cards too (user rule, proven on ArchitectOS slide 5).** When a card's content is compact, shrink the card to its content and put a **new card** in the freed space of the same column, rather than spreading rows. The new card must answer an evaluator question the slide doesn't answer yet (e.g. guardrails shrank → "Why a lender pays · ₹ estimate"; cohort test shrank → "Measured without surveillance"; experiments became a table → "Why this order"). Small new cards suit compact devices: a Fermi chain of chips, an icon + one-line soft card, a 3-chevron sequence.
+10. **Split, don't stretch (user rule).** When one graphic leaves white space in its region, shrink the graphic to its natural size, **split the region**, and add a new section in the freed part. Never enlarge a graphic or its fonts to fill space.
 
 Icons: Lucide, flat, one colour from the theme, always inside a soft circle when next to text. Never mix icon sets. Images the user supplies (avatars, product photos, logos) go in rounded frames; never invent or fetch photos. If an avatar image is missing, use initials.
 
@@ -165,7 +188,6 @@ The reference decks are **inspiration for layout and visual devices only**. Neve
 | Present estimates as facts | Source every number; tag claims **Validated** or **Hypothesis** where relevant |
 | Bury the answer | Takeaway strips that state the answer; tracker + strips retell the story alone |
 | Rotate long text vertically | Rotate only short labels (4 words or fewer) |
-
 Before delivering, check each slide against this table. If a reference does something better than a slide you built, borrow the idea and say so.
 
 ## Signature details (from the reference review)

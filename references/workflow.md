@@ -2,9 +2,9 @@
 
 Each mode is a focused routine. The user can name one directly ("critique slide 2", "densify slide 3", "teardown this deck"), or run the default loop for a new deck:
 
-**shape → ideate → build → critique → polish → verify → export**
+**shape → research → ideate → build → critique → polish → verify → export**
 
-Checkpoints: **stop and ask the user after shape, ideate and critique.**
+Checkpoints: **stop and ask the user after shape, research, ideate and critique.**
 
 **Talk before generating (user rule).** Before any build, rebuild, polish, densify, distill or theme change, describe the plan (what is added, what moves, what each region will contain) and wait for an explicit go-ahead. The only exception: fixing obvious render defects (overflow, wraps, collisions) during a build the user already approved. Verify and teardown may run straight through because they change nothing.
 
@@ -16,7 +16,17 @@ A mode applies to the slides named; with no slide named, it applies to the whole
 1. Read `narrative-templates.md`. Default flow: Problem → Who faces it (incl. pain-point prioritisation) → Solution/MVP → GTM → Metrics.
 2. Set the tracker (6 sections at most) and the CIRCLES step per slide.
 3. Per slide, write the takeaway sentence (a point, not a topic) and name the frameworks it will use.
-4. Post the storyboard as a table. **Stop for approval.**
+4. Per slide, write the **evaluator question map** (6–10 questions; narrative-templates.md "Content bar"), assign one question per region, and name the **hero region** (design-system.md "Visual hierarchy").
+5. Per slide, name its **insight move** (non-obvious why, contrarian bet, trade-off, what we won't do, second-order effect, kill criteria). If a slide has none, say so and propose one.
+6. Post the storyboard as a table: section · takeaway · hero · regions (each with its question) · insight move. **Stop for approval.**
+
+## research (checkpoint)
+Runs by default after shape, because placeholders make slides look unfinished.
+1. List every number slot the approved storyboard needs (market sizes, prices, benchmarks, adoption stats, competitor facts).
+2. Search for each. Sort findings into **Solid / Use with care / Drop** with links (SKILL.md data policy).
+3. For slots with no usable source, draft a **Fermi chain** with each input visible, tagged **Estimate**.
+4. Leave `[__]` only for the user's private data (their own metrics, names, dates).
+5. Post the shortlist and the estimates. **Stop for approval**; use only what the user approves. Skip this step only if the user says to keep placeholders.
 
 ## ideate (checkpoint)
 For every framework or major graphic on the slide(s):
@@ -43,11 +53,13 @@ For every framework or major graphic on the slide(s):
 
 ## critique (checkpoint)
 Look at the rendered PNG, not just the script. Output an **issue list only (no scores)**, most severe first. Each issue: what's wrong, where (region), and the exact fix. Check, in order:
+0. **Content**: any region that restates another region or answers no evaluator question (cut or replace it)? Any generic line with no mechanism or number? Does the slide carry its insight move? Placeholders that research could have filled?
 1. **Readability**: text under 10 pt (9.5 in tables/personas), wraps that break words, low contrast.
-2. **Hierarchy**: does the takeaway read first, big numbers second? Competing focal points?
+2. **Hierarchy (squint test)**: viewed at thumbnail size, does the takeaway read first and the hero second? Is there exactly one hero at 1.5–2× the other regions, with a 40–60 pt number or full-size graphic? At least a 4× type-size jump? At least two container styles? Nine look-alike boxes is a defect.
 3. **Grid**: edges off the shared columns, unequal gutters, ragged panel bottoms.
-4. **Density**: below 6 regions or ~250 words? Empty areas inside panels?
+4. **Density**: below the density budget (design-system.md)? Empty areas inside panels?
 5. **Frameworks**: each drawn as a graphic, tagged with its name, adding insight rather than decoration?
+5a. **Spread rows**: any card where a few short lines are spaced out to fill its height (text covers under ~70%)? Fix by converting to a table, adding an information column, or shrinking the card (design-system.md "No spread rows").
 5b. **Graphic density**: any graphic more than ~40% empty (big circles with one number, near-empty quadrants, one-word chevrons, empty bars, tiles around a single figure)? Fix by shrinking, labelling on the graphic, annotating, or merging with its explanation (design-system.md "Information per square inch").
 6. **Colour weight**: accent over ~15%, extra hues, severity colours outside severity elements.
 7. **Consistency**: tracker identical to other slides, repeated elements share geometry, one icon set.
@@ -59,7 +71,7 @@ End with: "Apply all, pick, or none?" **Stop for the answer.**
 Fix layout without changing content: snap to grid, equalise gutters, align panel tops/bottoms, remove empty space by resizing panels, unify corner radii and stroke weights, consistent icon sizes, tighten label widths. Rebuild, export, view. Report changes in one short list.
 
 ## densify
-Raise a light slide to the density bar (6–7 regions, ~250–300 words). First reclaim space from low-information graphics (shrink, label on the graphic, merge explanation into it), then prefer adding an **evidence region** (chart, mini-case, timeline, quote chips, stat strip) over enlarging existing ones. If the new region needs a new graphic, run a quick **ideate** round first (that part is a checkpoint). Keep the takeaway unchanged.
+Raise a light slide to the density bar (design-system.md "Density budget"). **Every added region must answer an evaluator question the slide doesn't answer yet**; list those questions in the plan before adding anything, and never add a region that restates existing content. Keep the hero the largest region. First reclaim space from low-information graphics (shrink, label on the graphic, merge explanation into it); where one graphic leaves white space, **split its region and add a new section** in the freed part; then prefer adding an **evidence region** (chart, mini-case, timeline, quote chips, stat strip) over enlarging existing ones. If the new region needs a new graphic, run a quick **ideate** round first (that part is a checkpoint). Keep the takeaway unchanged.
 
 ## distill
 Make the slide read faster without losing claims: cut words to fragments, one idea per block, 1–3 coloured keyphrases per block, sharpen the takeaway so it states the answer. Never drop a number or a source. Report before/after word count.

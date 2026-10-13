@@ -97,6 +97,8 @@ The repeated phase layout is the point: the reader learns it once and then only 
 
 **Problem → Who faces it (incl. pain-point prioritisation) → Solution / MVP → GTM → Metrics.** Use this order unless the prompt's own sub-questions dictate another.
 
+**The Solution section must show the product (user rule):** include an MVP wireframe walkthrough (screens with numbered callouts grouped by flow step, drawn low-fi from shapes or framed from the user's real screenshots), not only prioritisation frameworks. If the deck is capped at 5 slides, ask whether to add a slide or merge.
+
 ## Frameworks (required)
 
 Every content slide applies at least one named PM framework, **drawn as a graphic** (matrix, funnel, curve, tree, table with visual scoring), never as a bulleted list. Put the framework's name in a small tag on the panel ("RICE", "Kano") so evaluators see it was used deliberately.
@@ -117,6 +119,26 @@ Scores and ratings inside a framework (RICE numbers, Kano classes, matrix positi
 
 CIRCLES can serve as the whole deck's spine: tag each slide with its CIRCLES step (Comprehend, Identify, Report, Cut, List, Evaluate, Summarise).
 
+## Content bar: questions, insight, numbers (user rule)
+
+Layout makes a slide tidy; content makes it impressive. Apply these during **shape**, before any graphic is chosen.
+
+**1. Evaluator question map.** For each slide, list the 6–10 questions a sharp interviewer or judge would ask about that section (e.g. GTM: "Who pays first?", "How do you get the first 10 customers?", "What do rivals charge?", "What's the biggest GTM risk?", "When do you move to the next phase?"). Each region answers exactly one question. A region with no question is filler; two regions answering the same question get merged. Show the map in the storyboard so the user can add or cut questions.
+
+**2. Insight bar.** Every slide carries at least one claim an evaluator wouldn't have written themselves. Each deck needs at least two or three of these moves:
+- **non-obvious "why"**: the root cause behind the visible symptom
+- **contrarian bet**: "we deliberately don't build X, because…"
+- **explicit trade-off**: what was given up and why it's worth it
+- **what we won't do**: rejected alternatives with why they lost
+- **second-order effect**: what changes downstream if this works (or fails)
+- **kill criteria**: the signal that would make us stop
+
+Generic lines ("improves UX", "drives engagement", "AI-powered") fail the bar: rewrite them with a mechanism and a number, or cut them.
+
+**3. Numbers before build.** Placeholders make a slide look unfinished. Run the **research** step (workflow.md) before building: find sourced figures for every slot. Where nothing can be sourced, show the working as a **Fermi chain** (e.g. `12k BFSI eng teams × 40 seats × ₹800/mo`) tagged **Estimate**, with each input visible so the evaluator can challenge it. A bare `[__]` is only acceptable for the user's private data (their own metrics, team names).
+
+**4. So-what test (per region).** Cover the region: does the slide lose an argument? If not, cut it. Then read the region's text alone: does it end in an implication ("so we start with lenders"), not just a fact?
+
 ## Mixing templates
 
 Interview-style product cases often need A plus pieces of B. Keep A's tracker and add an "Investment & trade-offs" or "Phased GTM" slide before Metrics; add its label to the tracker. Never exceed 6 tracker sections: beyond that labels get cramped and the story is too wide.
@@ -127,4 +149,6 @@ Interview-style product cases often need A plus pieces of B. Keep A's tracker an
 2. Does every sub-question in the breakdown slide map to exactly one tracker section?
 3. Does each slide make one point, with every region on it supporting that point?
 4. Does every problem have a matching solution and every risk a mitigation, visibly paired?
-5. Are the numbers the user's? (See data policy in SKILL.md: placeholders, never invented.)
+5. Are the numbers the user's or sourced? (See data policy in SKILL.md; never invented. Estimates show their Fermi chain.)
+6. Does every region answer a distinct evaluator question, and does every slide carry at least one insight move (see "Content bar")?
+7. Does every slide name its hero region?
