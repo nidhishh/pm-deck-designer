@@ -363,30 +363,37 @@ function createDeck(theme, meta = {}) {
   }
 
   /**
-   * Persona card. o: {x,y,w,h,name,meta,quote,blocks:[{label,items[]}],solution,image?,initials?}
+   * Persona card (zero-whitespace dense layout).
+   * o: {x,y,w,h,name,meta,quote,stat?,baton?,blocks:[{label,items[]}],solution,image?,initials?}
    */
   function persona(slide, o) {
     panel(slide, { x: o.x, y: o.y, w: o.w, h: o.h, fill: c.accentSoft, color: c.warning, dashed: false });
-    avatar(slide, { x: o.x + 0.12, y: o.y + 0.12, d: 0.7, image: o.image, initials: o.initials || o.name.split(' ').map((s) => s[0]).join('').slice(0, 2) });
-    text(slide, o.name, { x: o.x + 0.9, y: o.y + 0.1, w: o.w - 1.0, h: 0.34, size: 15, bold: true, color: c.primary, valign: 'middle', noFitCheck: true });
-    text(slide, o.meta, { x: o.x + 0.9, y: o.y + 0.44, w: o.w - 1.0, h: 0.4, size: 10, color: c.muted, noFitCheck: true });
-    text(slide, '“' + o.quote + '”', { x: o.x + 0.12, y: o.y + 0.92, w: o.w - 0.24, h: 0.5, size: 10, italic: true, valign: 'middle' });
-    const solH = o.solution ? 0.7 : 0;
-    let y = o.y + 1.45;
-    const avail = o.y + o.h - solH - 0.14 - y;
-    const need = o.blocks.map((b) => 0.32 + b.items.length * 0.2 + 0.06);
+    avatar(slide, { x: o.x + 0.1, y: o.y + 0.1, d: 0.56, image: o.image, initials: o.initials || o.name.split(' ').map((s) => s[0]).join('').slice(0, 2) });
+    const tagW = o.baton ? 0.65 : 0;
+    text(slide, o.name, { x: o.x + 0.74, y: o.y + 0.08, w: o.w - 0.84 - tagW, h: 0.28, size: 13, bold: true, color: c.primary, valign: 'middle', noFitCheck: true });
+    if (o.baton) pill(slide, { x: o.x + o.w - 0.72, y: o.y + 0.1, w: 0.62, h: 0.22, text: o.baton, variant: 'primary', size: 9 });
+    text(slide, o.meta, { x: o.x + 0.74, y: o.y + 0.36, w: o.w - 0.84, h: 0.3, size: 9.5, color: c.muted, noFitCheck: true });
+    let y = o.y + 0.72;
+    if (o.quote) {
+      rrect(slide, { x: o.x + 0.1, y, w: o.w - 0.2, h: 0.42, fill: 'FFFFFF', line: c.primaryMid });
+      text(slide, '“' + o.quote + '”', { x: o.x + 0.16, y, w: o.w - 0.32, h: 0.42, size: 9.5, italic: true, valign: 'middle' });
+      y += 0.48;
+    }
+    const solH = o.solution ? 0.46 : 0;
+    const avail = o.y + o.h - solH - 0.08 - y;
+    const need = o.blocks.map((b) => 0.24 + b.items.length * 0.19 + 0.05);
     const total = need.reduce((a, b) => a + b, 0);
-    if (total > avail * 1.02) K.warnings.push(`persona "${o.name}" needs ~${total.toFixed(2)}in for its blocks but only ${avail.toFixed(2)}in is available; give the card more height or cut items`);
-    const extra = Math.max(0, (avail - total) / o.blocks.length);
+    if (total > avail * 1.05) K.warnings.push(`persona "${o.name}" needs ~${total.toFixed(2)}in for its blocks but only ${avail.toFixed(2)}in is available; give the card more height or cut items`);
+    if (total < avail * 0.72) K.warnings.push(`persona "${o.name}" has >25% empty vertical space (${total.toFixed(2)}in used of ${avail.toFixed(2)}in); add a workflow/metric block or shrink card height`);
     o.blocks.forEach((b, i) => {
-      const bh = need[i] + extra;
-      pill(slide, { x: o.x + 0.12, y, w: 1.2, h: 0.26, text: b.label, variant: 'primary', size: 10 });
-      text(slide, b.items, { x: o.x + 0.12, y: y + 0.3, w: o.w - 0.24, h: bh - 0.3, size: 9.5, bullets: true });
+      const bh = need[i];
+      pill(slide, { x: o.x + 0.1, y, w: Math.max(1.1, b.label.length * 0.085 + 0.3), h: 0.22, text: b.label, variant: 'primary', size: 9.5 });
+      text(slide, b.items, { x: o.x + 0.1, y: y + 0.24, w: o.w - 0.2, h: bh - 0.24, size: 9.5, bullets: true });
       y += bh;
     });
     if (o.solution) {
-      panel(slide, { x: o.x + 0.1, y: o.y + o.h - solH - 0.08, w: o.w - 0.2, h: solH, fill: c.primarySoft, color: c.primaryMid, dashed: false });
-      text(slide, '**Solution →** ' + o.solution, { x: o.x + 0.16, y: o.y + o.h - solH - 0.06, w: o.w - 0.32, h: solH - 0.04, size: 9.5, valign: 'middle' });
+      panel(slide, { x: o.x + 0.08, y: o.y + o.h - solH - 0.06, w: o.w - 0.16, h: solH, fill: c.primarySoft, color: c.primaryMid, dashed: false });
+      text(slide, '**Implication / Wedge →** ' + o.solution, { x: o.x + 0.14, y: o.y + o.h - solH - 0.04, w: o.w - 0.28, h: solH - 0.04, size: 9.5, valign: 'middle' });
     }
   }
   K.avatar = avatar; K.persona = persona;
@@ -427,11 +434,12 @@ function createDeck(theme, meta = {}) {
   K.sevCell = sevCell;
 
   /**
-   * Generic styled table. o: {x,y,w,colW[] (scaled to w),header[],rows[][],size?,firstCol?:'soft'|'none',h? (fills that height) | rowH?}
+   * Generic styled table (capped row height so tables never stretch with ugly blank whitespace).
+   * o: {x,y,w,colW[] (scaled to w),header[],rows[][],size?,firstCol?:'soft'|'none',h?,rowH?,footer?}
    * A cell is a string (supports **bold**) or { text, options }.
    */
   function table(slide, o) {
-    const size = o.size || 10;
+    const size = o.size || 9.5;
     const base = { fontFace: F.body, fontSize: size, color: c.ink, valign: 'middle' };
     const hdr = o.header.map((h) => ({ text: h, options: { ...base, bold: true, color: 'FFFFFF', fill: { color: c.primary }, align: 'center', fontSize: size + 0.5 } }));
     const body = o.rows.map((r, ri) =>
@@ -445,34 +453,56 @@ function createDeck(theme, meta = {}) {
     );
     const sum = o.colW.reduce((a, b) => a + b, 0);
     const colW = o.colW.map((v) => (v * o.w) / sum);
-    const rowH = o.h ? [0.4, ...o.rows.map(() => (o.h - 0.4) / o.rows.length)] : o.rowH;
+    const footH = o.footer ? 0.30 : 0;
+    const availH = o.h ? o.h - footH - (o.footer ? 0.04 : 0) : null;
+    const hdrH = 0.28;
+    let rowH = o.rowH;
+    if (availH) {
+      const rawRowH = (availH - hdrH) / o.rows.length;
+      if (rawRowH > 0.46) K.warnings.push(`table at (${o.x.toFixed(1)},${o.y.toFixed(1)}) has tall stretched rows (${rawRowH.toFixed(2)}in/row for ${o.rows.length} rows); add more data rows or attach a footer`);
+      const capped = Math.min(0.42, rawRowH);
+      rowH = [hdrH, ...o.rows.map(() => capped)];
+    }
     slide.addTable([hdr, ...body], {
-      x: o.x, y: o.y, w: o.w, colW, rowH, margin: [0.04, 0.08, 0.04, 0.08],
+      x: o.x, y: o.y, w: o.w, colW, rowH, margin: [0.02, 0.05, 0.02, 0.05],
       border: { type: 'solid', pt: 0.75, color: c.primaryMid },
     });
+    if (o.footer && o.h) {
+      const fy = o.y + o.h - footH;
+      rrect(slide, { x: o.x, y: fy, w: o.w, h: footH, r: 0.06, fill: c.accentSoft, line: c.accent });
+      text(slide, o.footer, { x: o.x + 0.08, y: fy, w: o.w - 0.16, h: footH, size: 9, valign: 'middle', noFitCheck: true });
+    }
   }
   K.table = table;
 
-  /** Metric card: name, formula, description, benchmark, target. */
+  /** Metric card (tightly packed: name, baton tag, formula, desc, benchmark, target, guardrail). */
   function metricCard(slide, o) {
     const x = o.x, y = o.y, w = o.w;
-    panel(slide, { x, y: y + 0.17, w, h: o.h - 0.17, fill: c.card, color: c.primaryMid, dashed: false });
-    pill(slide, { x: x + 0.1, y, w: w - 0.2, h: 0.34, text: o.name, variant: 'primary', size: 11 });
-    let cy = y + 0.5;
-    if (o.formula) {
-      text(slide, o.formula, { x: x + 0.12, y: cy, w: w - 0.24, h: 0.42, size: 11, bold: true, color: c.primary, align: 'center', valign: 'middle', font: 'Cambria', noFitCheck: true });
-      cy += 0.46;
+    panel(slide, { x, y: y + 0.15, w, h: o.h - 0.15, fill: c.card, color: c.primaryMid, dashed: false });
+    pill(slide, { x: x + 0.08, y, w: w - 0.16, h: 0.30, text: o.name, variant: 'primary', size: 10.5 });
+    let cy = y + 0.36;
+    if (o.baton) {
+      pill(slide, { x: x + 0.1, y: cy, w: w - 0.2, h: 0.20, text: o.baton, variant: 'soft', size: 9 });
+      cy += 0.24;
     }
-    text(slide, o.desc, { x: x + 0.12, y: cy, w: w - 0.24, h: 0.62, size: 10, align: 'center' });
-    cy += 0.66;
+    if (o.formula) {
+      rrect(slide, { x: x + 0.08, y: cy, w: w - 0.16, h: 0.34, fill: c.primarySoft });
+      text(slide, o.formula, { x: x + 0.12, y: cy, w: w - 0.24, h: 0.34, size: 10, bold: true, color: c.primary, align: 'center', valign: 'middle', font: 'Cambria', noFitCheck: true });
+      cy += 0.38;
+    }
+    if (o.desc) {
+      text(slide, o.desc, { x: x + 0.1, y: cy, w: w - 0.2, h: 0.42, size: 9.5, align: 'center', valign: 'middle' });
+      cy += 0.45;
+    }
     if (o.benchmark) {
-      panel(slide, { x: x + 0.1, y: cy, w: w - 0.2, h: 0.55, fill: c.accentSoft, color: c.warning, dashed: false });
-      text(slide, '**Benchmark:** ' + o.benchmark, { x: x + 0.14, y: cy, w: w - 0.28, h: 0.55, size: 9.5, valign: 'middle' });
-      cy += 0.62;
+      panel(slide, { x: x + 0.08, y: cy, w: w - 0.16, h: 0.40, fill: c.accentSoft, color: c.warning, dashed: false });
+      text(slide, '**Benchmark:** ' + o.benchmark, { x: x + 0.12, y: cy, w: w - 0.24, h: 0.40, size: 9.5, valign: 'middle' });
+      cy += 0.44;
     }
     if (o.target) {
-      panel(slide, { x: x + 0.1, y: cy, w: w - 0.2, h: o.y + o.h - cy - 0.1, fill: c.card, color: c.danger });
-      text(slide, o.target, { x: x + 0.14, y: cy, w: w - 0.28, h: o.y + o.h - cy - 0.1, size: 9.5, italic: true, valign: 'middle', align: 'center' });
+      const remH = Math.max(0.36, o.y + o.h - cy - 0.08);
+      panel(slide, { x: x + 0.08, y: cy, w: w - 0.16, h: remH, fill: c.card, color: c.danger });
+      text(slide, o.target, { x: x + 0.12, y: cy, w: w - 0.24, h: remH, size: 9.5, valign: 'middle', align: 'center' });
     }
   }
   K.metricCard = metricCard;
@@ -551,7 +581,7 @@ function createDeck(theme, meta = {}) {
   function sec(slide, o) {
     const ph = 0.28;
     panel(slide, { x: o.x, y: o.y + ph / 2, w: o.w, h: o.h - ph / 2, fill: o.fill });
-    const pw = o.pillW || String(o.title).length * 0.085 + 0.4;
+    const pw = Math.min(o.w - 0.32, o.pillW || String(o.title).length * 0.082 + 0.36);
     pill(slide, { x: o.x + (o.w - pw) / 2, y: o.y, w: pw, h: ph, text: o.title, variant: o.variant || 'soft', size: 10 });
     return { x: o.x + 0.12, y: o.y + ph + 0.08, w: o.w - 0.24, h: o.h - ph - 0.16 };
   }
@@ -576,7 +606,7 @@ function createDeck(theme, meta = {}) {
     const bx = M + lw - 0.08, bw = R - bx, tw = o.chip ? bw - 1.8 : bw - 0.3;
     rrect(slide, { x: bx, y, w: bw, h, r: 0.08, fill: c.primary });
     text(slide, o.line1, { x: bx + 0.16, y: y + 0.04, w: tw, h: 0.28, size: 13, bold: true, color: 'FFFFFF', hl: c.accent, valign: 'middle', noFitCheck: true });
-    if (o.line2) text(slide, o.line2, { x: bx + 0.16, y: y + 0.31, w: tw, h: 0.22, size: 9.5, color: c.primaryMid, valign: 'middle', noFitCheck: true });
+    if (o.line2) text(slide, o.line2, { x: bx + 0.16, y: y + 0.31, w: tw, h: 0.22, size: 9.5, color: c.primaryMid, hl: c.accent, valign: 'middle', noFitCheck: true });
     if (o.chip) pill(slide, { x: R - 1.55, y: y + (h - 0.28) / 2, w: 1.42, h: 0.28, text: o.chip, variant: 'soft', size: 9.5 });
   }
   K.insightStrip = insightStrip;
@@ -685,6 +715,146 @@ function createDeck(theme, meta = {}) {
     }
   }
   K.imageSlot = imageSlot;
+
+  /**
+   * Anchored Implication / Decision Footer Bar inside a panel (eliminates bottom whitespace).
+   * Takes the inner box returned by K.sec and mutates/returns the remaining upper box.
+   * o: {box, text, h?:0.28, variant?:'accent'|'soft'}
+   */
+  function footerBar(slide, o) {
+    const fh = o.h || 0.28, b = o.box;
+    const fy = b.y + b.h - fh;
+    const isAcc = o.variant === 'accent';
+    rrect(slide, { x: b.x, y: fy, w: b.w, h: fh, r: 0.06, fill: isAcc ? c.accentSoft : c.primarySoft, line: isAcc ? c.accent : c.primaryMid });
+    text(slide, o.text, { x: b.x + 0.08, y: fy, w: b.w - 0.16, h: fh, size: 9.5, valign: 'middle', noFitCheck: true });
+    return { x: b.x, y: b.y, w: b.w, h: b.h - fh - 0.06 };
+  }
+  K.footerBar = footerBar;
+
+  /**
+   * Compact Baton Carryover Badge ([D1], [P1], [Solves P1], [M1], [Tracks M1]).
+   * o: {x, y, w?, h?:0.20, code, variant?:'primary'|'accent'|'soft'}
+   */
+  function batonPill(slide, o) {
+    const h = o.h || 0.20;
+    const w = o.w || Math.max(0.48, String(o.code).length * 0.08 + 0.18);
+    pill(slide, { x: o.x, y: o.y, w, h, text: o.code, variant: o.variant || 'primary', size: 9 });
+    return w;
+  }
+  K.batonPill = batonPill;
+
+  /**
+   * High-density Score-Bar Table (for RICE, Segment Selection, Channel Economics, or Pain Scoring).
+   * Renders rows with inline horizontal score bars, baton badges, and an optional anchored footer.
+   * o: {x, y, w, h, cols:[{label, w, type?:'text'|'bar'|'badge'}], rows:[[cell,...]], maxScore?:100, footer?}
+   */
+  function scoreTable(slide, o) {
+    const footH = o.footer ? 0.28 : 0;
+    const hdrH = 0.28;
+    const availH = o.h - footH - hdrH - (o.footer ? 0.04 : 0);
+    const rh = availH / o.rows.length;
+    const sumW = o.cols.reduce((a, c2) => a + (c2.w || 1), 0);
+    const colW = o.cols.map((c2) => ((c2.w || 1) * o.w) / sumW);
+    let cx = o.x;
+    rrect(slide, { x: o.x, y: o.y, w: o.w, h: hdrH, r: 0.05, fill: c.primary });
+    o.cols.forEach((col, j) => {
+      text(slide, col.label, { x: cx + 0.04, y: o.y, w: colW[j] - 0.08, h: hdrH, size: 9.5, bold: true, color: 'FFFFFF', align: col.type === 'text' ? 'left' : 'center', valign: 'middle', noFitCheck: true });
+      cx += colW[j];
+    });
+    const maxS = o.maxScore || 100;
+    o.rows.forEach((r, i) => {
+      const ry = o.y + hdrH + i * rh;
+      const isHighlight = r.highlight;
+      const cells = Array.isArray(r) ? r : r.cells;
+      rrect(slide, { x: o.x, y: ry, w: o.w, h: rh, r: 0.03, fill: isHighlight ? c.accentSoft : i % 2 ? c.surface : 'FFFFFF', line: isHighlight ? c.accent : c.primarySoft, lw: isHighlight ? 1.25 : 0.5 });
+      let rx = o.x;
+      cells.forEach((val, j) => {
+        const cw = colW[j], col = o.cols[j];
+        if (col.type === 'bar') {
+          const num = typeof val === 'object' ? val.score : Number(val) || 0;
+          const lab = typeof val === 'object' && val.label ? val.label : String(val);
+          const barMaxW = cw - 0.16, bh = Math.min(0.20, rh - 0.06);
+          const fillW = Math.max(0.12, Math.min(1, num / maxS) * barMaxW);
+          rrect(slide, { x: rx + 0.08, y: ry + (rh - bh) / 2, w: barMaxW, h: bh, r: bh / 2, fill: c.primarySoft });
+          rrect(slide, { x: rx + 0.08, y: ry + (rh - bh) / 2, w: fillW, h: bh, r: bh / 2, fill: isHighlight ? c.primary : c.primaryMid });
+          text(slide, lab, { x: rx + 0.08, y: ry, w: barMaxW, h: rh, size: 9, bold: true, color: isHighlight && num >= 50 ? 'FFFFFF' : c.ink, align: 'center', valign: 'middle', noFitCheck: true });
+        } else if (col.type === 'badge') {
+          const bw = Math.min(cw - 0.1, Math.max(0.5, String(val).length * 0.08 + 0.16));
+          pill(slide, { x: rx + (cw - bw) / 2, y: ry + (rh - 0.2) / 2, w: bw, h: 0.2, text: String(val), variant: isHighlight ? 'accent' : 'soft', size: 9 });
+        } else {
+          text(slide, String(val), { x: rx + 0.06, y: ry, w: cw - 0.12, h: rh, size: 9.5, bold: j === 0 || isHighlight, color: j === 0 ? c.primary : c.ink, valign: 'middle', noFitCheck: true });
+        }
+        rx += cw;
+      });
+    });
+    if (o.footer) {
+      const fy = o.y + o.h - footH;
+      rrect(slide, { x: o.x, y: fy, w: o.w, h: footH, r: 0.06, fill: c.primarySoft, line: c.primaryMid });
+      text(slide, o.footer, { x: o.x + 0.08, y: fy, w: o.w - 0.16, h: footH, size: 9.5, valign: 'middle', noFitCheck: true });
+    }
+  }
+  K.scoreTable = scoreTable;
+
+  /**
+   * Dense 2x2 Prioritisation Matrix with shaded winning quadrant, quadrant headers, plotted data bubbles, and footer.
+   * o: {x, y, w, h, xAxis, yAxis, quads:[TL, TR, BL, BR], points:[{code, label, x:0..1, y:0..1, metric?, win?}], footer?}
+   */
+  function matrix2x2(slide, o) {
+    const footH = o.footer ? 0.28 : 0;
+    const axisW = 0.22, axisH = 0.20;
+    const gx = o.x + axisW, gy = o.y, gw = o.w - axisW, gh = o.h - axisH - footH - (o.footer ? 0.04 : 0);
+    const hw = gw / 2, hh = gh / 2;
+    // 4 quadrants: TL (0), TR (1 - default winning quadrant), BL (2), BR (3)
+    const qCoords = [
+      [gx, gy, c.surface, false],
+      [gx + hw, gy, c.accentSoft, true],
+      [gx, gy + hh, c.surface, false],
+      [gx + hw, gy + hh, c.primarySoft, false],
+    ];
+    qCoords.forEach(([qx, qy, fill, isWin], i) => {
+      rrect(slide, { x: qx + 0.02, y: qy + 0.02, w: hw - 0.04, h: hh - 0.04, r: 0.06, fill, line: isWin ? c.accent : c.primaryMid, lw: isWin ? 1.5 : 0.75 });
+      if (o.quads && o.quads[i]) {
+        text(slide, o.quads[i], { x: qx + 0.06, y: qy + 0.03, w: hw - 0.12, h: 0.18, size: 8.5, allowSmall: true, bold: true, color: isWin ? c.primary : c.muted, align: i % 2 ? 'right' : 'left', noFitCheck: true });
+      }
+    });
+    // axes labels
+    text(slide, o.yAxis || 'Severity / Impact ↑', { x: o.x + axisW / 2 - gh / 2, y: gy + gh / 2 - axisW / 2, w: gh, h: axisW, size: 9, bold: true, color: c.primary, align: 'center', valign: 'middle', rotate: 270, margin: 0, noFitCheck: true });
+    text(slide, o.xAxis || 'Frequency / Urgency →', { x: gx, y: gy + gh, w: gw, h: axisH, size: 9, bold: true, color: c.primary, align: 'center', valign: 'middle', noFitCheck: true });
+    // Group points by quadrant and stack or place cleanly so 3 points fit in a quadrant without overlap
+    const byQuad = [[], [], [], []];
+    (o.points || []).forEach((pt) => {
+      const qi = (pt.y >= 0.5 ? 0 : 2) + (pt.x >= 0.5 ? 1 : 0);
+      byQuad[qi].push(pt);
+    });
+    byQuad.forEach((pts, qi) => {
+      if (!pts.length) return;
+      const qx0 = qi % 2 ? gx + hw : gx;
+      const qy0 = qi < 2 ? gy : gy + hh;
+      const topPad = 0.22, botPad = 0.04, availQH = hh - topPad - botPad;
+      const gap = 0.03;
+      const bh = Math.min(0.34, (availQH - gap * (pts.length - 1)) / pts.length);
+      pts.forEach((pt, idx) => {
+        const isW = pt.win !== false && qi === 1;
+        const bw = hw - 0.14;
+        const bx = qx0 + 0.07;
+        const by = pts.length === 1
+          ? qy0 + topPad + (availQH - bh) * (1 - (pt.y % 0.5) * 2) * 0.5
+          : qy0 + topPad + idx * (bh + gap);
+        rrect(slide, { x: bx, y: by, w: bw, h: bh, r: 0.05, fill: isW ? c.primary : 'FFFFFF', line: isW ? c.accent : c.primary, lw: 1.1 });
+        const line1 = (pt.code ? `**[${pt.code}]** ` : '') + pt.label;
+        text(slide, pt.metric ? `${line1} · ${pt.metric}` : line1, {
+          x: bx + 0.04, y: by, w: bw - 0.08, h: bh,
+          size: 8.5, allowSmall: true, bold: isW, color: isW ? 'FFFFFF' : c.ink, hl: isW ? c.accent : c.primary, align: 'center', valign: 'middle', noFitCheck: true,
+        });
+      });
+    });
+    if (o.footer) {
+      const fy = o.y + o.h - footH;
+      rrect(slide, { x: o.x, y: fy, w: o.w, h: footH, r: 0.06, fill: c.primarySoft, line: c.primaryMid });
+      text(slide, o.footer, { x: o.x + 0.08, y: fy, w: o.w - 0.16, h: footH, size: 9.5, valign: 'middle', noFitCheck: true });
+    }
+  }
+  K.matrix2x2 = matrix2x2;
 
   /** Write the file and push the palette into the PowerPoint theme. */
   K.save = async function (file) {
